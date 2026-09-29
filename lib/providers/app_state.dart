@@ -7,13 +7,55 @@ import '../models/reward_model.dart';
 import '../models/iot_sensor_model.dart';
 import '../models/report_model.dart';
 
+class DemoUserCredential {
+  final String email;
+  final String password;
+  final String roleLabel;
+  final String name;
+  final UserRole role;
+
+  const DemoUserCredential({
+    required this.email,
+    required this.password,
+    required this.roleLabel,
+    required this.name,
+    required this.role,
+  });
+}
+
 class AppState extends ChangeNotifier {
   // Current active role & authentication
   UserRole _currentRole = UserRole.warga;
-  bool _isAuthenticated = true;
+  bool _isAuthenticated = false;
+  bool _isLoggedIn = false;
 
   UserRole get currentRole => _currentRole;
   bool get isAuthenticated => _isAuthenticated;
+  bool get isLoggedIn => _isLoggedIn;
+
+  static const List<DemoUserCredential> demoCredentials = [
+    DemoUserCredential(
+      email: 'warga@gaskeun.id',
+      password: 'password123',
+      roleLabel: 'Warga',
+      name: 'Budi Pratama (RT 02)',
+      role: UserRole.warga,
+    ),
+    DemoUserCredential(
+      email: 'operator@gaskeun.id',
+      password: 'password123',
+      roleLabel: 'Operator',
+      name: 'Pak Anton (Teknisi)',
+      role: UserRole.operator,
+    ),
+    DemoUserCredential(
+      email: 'pengawas@gaskeun.id',
+      password: 'password123',
+      roleLabel: 'Pengawas RW',
+      name: 'Bu Sari Handayani (Ketua RW)',
+      role: UserRole.pengawas,
+    ),
+  ];
 
   // Profiles
   late UserProfile _wargaProfile;
@@ -52,6 +94,7 @@ class AppState extends ChangeNotifier {
     maxValue: 55.0,
     severity: SensorSeverity.normal,
     history7Points: [35.1, 35.6, 36.2, 36.8, 37.0, 37.2, 37.4],
+    sensorType: SensorType.temperature,
   );
 
   SensorMetric _pressureMetric = SensorMetric(
@@ -61,6 +104,40 @@ class AppState extends ChangeNotifier {
     maxValue: 1200.0,
     severity: SensorSeverity.warning,
     history7Points: [980.0, 995.0, 1010.0, 1025.0, 1032.0, 1038.0, 1045.0],
+    sensorType: SensorType.pressure,
+  );
+
+  // MQ-4 #1 — Detektor kebocoran gas (dipasang di luar)
+  SensorMetric _mq4OutdoorMetric = SensorMetric(
+    name: 'Gas Metana (Luar)',
+    currentValue: 12.0,
+    unit: 'ppm',
+    maxValue: 200.0,
+    severity: SensorSeverity.normal,
+    history7Points: [8.0, 9.5, 10.0, 11.2, 11.5, 11.8, 12.0],
+    sensorType: SensorType.mq4Outdoor,
+  );
+
+  // MQ-4 #2 — Dipasang di dalam biodigester
+  SensorMetric _mq4BiodgesterMetric = SensorMetric(
+    name: 'Gas Metana (Digester)',
+    currentValue: 4850.0,
+    unit: 'ppm',
+    maxValue: 10000.0,
+    severity: SensorSeverity.normal,
+    history7Points: [4200.0, 4380.0, 4520.0, 4640.0, 4720.0, 4790.0, 4850.0],
+    sensorType: SensorType.mq4Biodigester,
+  );
+
+  // MQ-136 — Dipasang setelah filter (H₂S)
+  SensorMetric _mq136Metric = SensorMetric(
+    name: 'H₂S Pasca Filter',
+    currentValue: 3.2,
+    unit: 'ppm',
+    maxValue: 50.0,
+    severity: SensorSeverity.normal,
+    history7Points: [2.1, 2.5, 2.7, 2.9, 3.0, 3.1, 3.2],
+    sensorType: SensorType.mq136,
   );
 
   Timer? _sensorSimulationTimer;
@@ -75,6 +152,9 @@ class AppState extends ChangeNotifier {
 
   SensorMetric get temperatureMetric => _temperatureMetric;
   SensorMetric get pressureMetric => _pressureMetric;
+  SensorMetric get mq4OutdoorMetric => _mq4OutdoorMetric;
+  SensorMetric get mq4BiodigesterMetric => _mq4BiodgesterMetric;
+  SensorMetric get mq136Metric => _mq136Metric;
 
   // Pending counts
   int get pendingSubmissionsCount =>
@@ -104,6 +184,7 @@ class AppState extends ChangeNotifier {
     _wargaProfile = UserProfile(
       id: 'usr-warga-01',
       name: 'Budi Pratama',
+      email: 'warga@gaskeun.id',
       phone: '0812-3456-7890',
       role: UserRole.warga,
       rw: 'RW 05',
@@ -118,6 +199,7 @@ class AppState extends ChangeNotifier {
     _operatorProfile = UserProfile(
       id: 'usr-opr-01',
       name: 'Pak Anton',
+      email: 'operator@gaskeun.id',
       phone: '0813-9876-5432',
       role: UserRole.operator,
       rw: 'RW 05',
@@ -127,6 +209,7 @@ class AppState extends ChangeNotifier {
     _pengawasProfile = UserProfile(
       id: 'usr-pgw-01',
       name: 'Bu Sari Handayani',
+      email: 'pengawas@gaskeun.id',
       phone: '0811-2233-4455',
       role: UserRole.pengawas,
       rw: 'RW 05',
@@ -320,6 +403,7 @@ class AppState extends ChangeNotifier {
       maxValue: 55.0,
       severity: tempSeverity,
       history7Points: updatedTempHistory,
+      sensorType: SensorType.temperature,
     );
 
     // Tekanan fluctuates between 1010 and 1070
@@ -343,8 +427,115 @@ class AppState extends ChangeNotifier {
       maxValue: 1200.0,
       severity: pressureSeverity,
       history7Points: updatedPressureHistory,
+      sensorType: SensorType.pressure,
     );
 
+    // MQ-4 #1 (Luar) — baseline rendah, loncat tinggi jika kebocoran
+    final mq4OutDelta = (random.nextDouble() - 0.4) * 3.0;
+    final newMq4Out = double.parse(
+        (_mq4OutdoorMetric.currentValue + mq4OutDelta).clamp(5.0, 200.0).toStringAsFixed(1));
+    final updatedMq4OutHistory = List<double>.from(_mq4OutdoorMetric.history7Points.sublist(1))
+      ..add(newMq4Out);
+    SensorSeverity mq4OutSeverity = SensorSeverity.normal;
+    if (newMq4Out > 100) {
+      mq4OutSeverity = SensorSeverity.critical;
+    } else if (newMq4Out > 40) {
+      mq4OutSeverity = SensorSeverity.warning;
+    }
+    _mq4OutdoorMetric = SensorMetric(
+      name: 'Gas Metana (Luar)',
+      currentValue: newMq4Out,
+      unit: 'ppm',
+      maxValue: 200.0,
+      severity: mq4OutSeverity,
+      history7Points: updatedMq4OutHistory,
+      sensorType: SensorType.mq4Outdoor,
+    );
+
+    // MQ-4 #2 (Digester) — konsentrasi tinggi normal di dalam biodigester
+    final mq4DigDelta = (random.nextDouble() - 0.45) * 80.0;
+    final newMq4Dig = double.parse(
+        (_mq4BiodgesterMetric.currentValue + mq4DigDelta).clamp(3000.0, 10000.0).toStringAsFixed(0));
+    final updatedMq4DigHistory = List<double>.from(_mq4BiodgesterMetric.history7Points.sublist(1))
+      ..add(newMq4Dig);
+    SensorSeverity mq4DigSeverity = SensorSeverity.normal;
+    if (newMq4Dig > 8000) {
+      mq4DigSeverity = SensorSeverity.critical;
+    } else if (newMq4Dig > 6500) {
+      mq4DigSeverity = SensorSeverity.warning;
+    }
+    _mq4BiodgesterMetric = SensorMetric(
+      name: 'Gas Metana (Digester)',
+      currentValue: newMq4Dig,
+      unit: 'ppm',
+      maxValue: 10000.0,
+      severity: mq4DigSeverity,
+      history7Points: updatedMq4DigHistory,
+      sensorType: SensorType.mq4Biodigester,
+    );
+
+    // MQ-136 (Pasca Filter) — H₂S harusnya rendah setelah filter
+    final mq136Delta = (random.nextDouble() - 0.45) * 0.6;
+    final newMq136 = double.parse(
+        (_mq136Metric.currentValue + mq136Delta).clamp(0.5, 50.0).toStringAsFixed(1));
+    final updatedMq136History = List<double>.from(_mq136Metric.history7Points.sublist(1))
+      ..add(newMq136);
+    SensorSeverity mq136Severity = SensorSeverity.normal;
+    if (newMq136 > 20) {
+      mq136Severity = SensorSeverity.critical;
+    } else if (newMq136 > 10) {
+      mq136Severity = SensorSeverity.warning;
+    }
+    _mq136Metric = SensorMetric(
+      name: 'H₂S Pasca Filter',
+      currentValue: newMq136,
+      unit: 'ppm',
+      maxValue: 50.0,
+      severity: mq136Severity,
+      history7Points: updatedMq136History,
+      sensorType: SensorType.mq136,
+    );
+
+    notifyListeners();
+  }
+
+  // Authentication & Login/Logout
+  bool login(String email, String password) {
+    final cleanEmail = email.trim().toLowerCase();
+    final cleanPassword = password.trim();
+
+    DemoUserCredential? matched;
+    for (final cred in demoCredentials) {
+      if (cred.email.toLowerCase() == cleanEmail) {
+        matched = cred;
+        break;
+      }
+    }
+
+    if (matched != null) {
+      if (cleanPassword == matched.password || cleanPassword.length >= 6) {
+        _currentRole = matched.role;
+        _isLoggedIn = true;
+        _isAuthenticated = true;
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } else {
+      if (cleanEmail.contains('@') && cleanPassword.length >= 6) {
+        _currentRole = UserRole.warga;
+        _isLoggedIn = true;
+        _isAuthenticated = true;
+        notifyListeners();
+        return true;
+      }
+      return false;
+    }
+  }
+
+  void logout() {
+    _isLoggedIn = false;
+    _isAuthenticated = false;
     notifyListeners();
   }
 

@@ -54,6 +54,9 @@ class OperatorDashboardTab extends StatelessWidget {
     final state = context.watch<AppState>();
     final temp = state.temperatureMetric;
     final pressure = state.pressureMetric;
+    final mq4Out = state.mq4OutdoorMetric;
+    final mq4Dig = state.mq4BiodigesterMetric;
+    final mq136 = state.mq136Metric;
     final alerts = state.activeAlerts;
 
     return SingleChildScrollView(
@@ -143,7 +146,7 @@ class OperatorDashboardTab extends StatelessWidget {
           ),
           const SizedBox(height: 12),
 
-          // 2-Column Sensor Cards (Suhu & Tekanan Gas)
+          // Row 1 — Suhu & Tekanan Gas (existing)
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -163,6 +166,56 @@ class OperatorDashboardTab extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          const SizedBox(height: 12),
+
+          // Gas Sensor Header
+          Row(
+            children: const [
+              Icon(Icons.gas_meter_outlined, size: 16, color: AppColors.primaryDark),
+              SizedBox(width: 6),
+              Text(
+                'Sensor Gas (MQ-Series)',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.primaryDark),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+
+          // Row 2 — MQ-4 #1 (Luar) & MQ-4 #2 (Digester)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _buildSensorCard(
+                  metric: mq4Out,
+                  icon: Icons.outdoor_grill_outlined,
+                  lineColor: const Color(0xFFEF4444),
+                  placementLabel: mq4Out.sensorType.placementInfo,
+                  sensorCode: mq4Out.sensorType.sensorCode,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildSensorCard(
+                  metric: mq4Dig,
+                  icon: Icons.biotech_outlined,
+                  lineColor: const Color(0xFF8B5CF6),
+                  placementLabel: mq4Dig.sensorType.placementInfo,
+                  sensorCode: mq4Dig.sensorType.sensorCode,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Row 3 — MQ-136 (full width)
+          _buildSensorCard(
+            metric: mq136,
+            icon: Icons.filter_alt_outlined,
+            lineColor: const Color(0xFF10B981),
+            placementLabel: mq136.sensorType.placementInfo,
+            sensorCode: mq136.sensorType.sensorCode,
           ),
           const SizedBox(height: 20),
 
@@ -194,6 +247,27 @@ class OperatorDashboardTab extends StatelessWidget {
                   color: AppColors.warning,
                   title: 'Batas Tekanan Aman: < 1.100 hPa',
                   desc: 'Buka katup distribusi ke kompor warga jika tekanan mendekati 1.150 hPa.',
+                ),
+                const SizedBox(height: 8),
+                _buildGuideRow(
+                  icon: Icons.gas_meter_outlined,
+                  color: AppColors.danger,
+                  title: 'MQ-4 Luar: Batas Peringatan > 40 ppm',
+                  desc: 'Jika sensor luar > 40 ppm, periksa kemungkinan kebocoran saluran gas.',
+                ),
+                const SizedBox(height: 8),
+                _buildGuideRow(
+                  icon: Icons.biotech_outlined,
+                  color: const Color(0xFF8B5CF6),
+                  title: 'MQ-4 Digester: Normal 3.000 – 6.500 ppm',
+                  desc: 'Konsentrasi metana tinggi di dalam digester adalah tanda fermentasi berjalan baik.',
+                ),
+                const SizedBox(height: 8),
+                _buildGuideRow(
+                  icon: Icons.filter_alt_outlined,
+                  color: AppColors.primary,
+                  title: 'MQ-136 H₂S Pasca Filter: < 10 ppm',
+                  desc: 'Nilai H₂S pasca filter harus rendah. Ganti media filter jika > 10 ppm.',
                 ),
                 const SizedBox(height: 8),
                 _buildGuideRow(
@@ -271,6 +345,8 @@ class OperatorDashboardTab extends StatelessWidget {
     required SensorMetric metric,
     required IconData icon,
     required Color lineColor,
+    String? placementLabel,
+    String? sensorCode,
   }) {
     Color statusColor;
     Color statusBg;
@@ -286,6 +362,11 @@ class OperatorDashboardTab extends StatelessWidget {
     }
 
     final progress = (metric.currentValue / metric.maxValue).clamp(0.0, 1.0);
+
+    // Format value: show 1 decimal for small float values, 0 decimal for large integers
+    final String valueText = metric.unit == 'ppm' && metric.currentValue >= 100
+        ? metric.currentValue.toStringAsFixed(0)
+        : metric.currentValue.toStringAsFixed(1);
 
     // Sparkline spots
     final spots = metric.history7Points.asMap().entries.map((e) {
@@ -305,7 +386,25 @@ class OperatorDashboardTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Icon(icon, color: lineColor, size: 22),
+              Row(
+                children: [
+                  Icon(icon, color: lineColor, size: 20),
+                  if (sensorCode != null) ...[
+                    const SizedBox(width: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                      decoration: BoxDecoration(
+                        color: lineColor.withOpacity(0.12),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        sensorCode,
+                        style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: lineColor),
+                      ),
+                    ),
+                  ],
+                ],
+              ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
@@ -322,15 +421,22 @@ class OperatorDashboardTab extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             metric.name,
-            style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
           ),
-          const SizedBox(height: 4),
+          if (placementLabel != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              placementLabel,
+              style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+            ),
+          ],
+          const SizedBox(height: 6),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
               Text(
-                metric.currentValue.toStringAsFixed(metric.unit == '°C' ? 1 : 0),
+                valueText,
                 style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
               ),
               const SizedBox(width: 4),

@@ -17,150 +17,94 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(64);
 
-  void _showRoleSwitcherDialog(BuildContext context) {
-    final state = context.read<AppState>();
+  void _showLogoutDialog(BuildContext context, AppState state) {
+    final profile = state.activeProfile;
 
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Pilih Mode / Peran Pengguna',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(ctx),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Beralih dengan cepat antara portal Warga, Operator, dan Pengawas untuk pengujian alur.',
-                  style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                ),
-                const SizedBox(height: 16),
-                _buildRoleOption(
-                  context: ctx,
-                  state: state,
-                  role: UserRole.warga,
-                  title: 'Portal Warga',
-                  subtitle: 'Budi Pratama — Setor sampah & tukar poin reward',
-                  icon: Icons.person_outline,
-                  color: AppColors.primary,
-                ),
-                const SizedBox(height: 10),
-                _buildRoleOption(
-                  context: ctx,
-                  state: state,
-                  role: UserRole.operator,
-                  title: 'Portal Operator',
-                  subtitle: 'Pak Anton — Monitoring IoT & verifikasi setoran',
-                  icon: Icons.precision_manufacturing_outlined,
-                  color: AppColors.info,
-                ),
-                const SizedBox(height: 10),
-                _buildRoleOption(
-                  context: ctx,
-                  state: state,
-                  role: UserRole.pengawas,
-                  title: 'Portal Pengawas RW',
-                  subtitle: 'Bu Sari Handayani — Ringkasan metrik & ekspor PDF',
-                  icon: Icons.assessment_outlined,
-                  color: Colors.deepPurple,
-                ),
-                const SizedBox(height: 10),
-              ],
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: Row(
+          children: const [
+            Icon(Icons.logout_rounded, color: AppColors.danger, size: 24),
+            SizedBox(width: 10),
+            Text(
+              'Ganti / Keluar Akun',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildRoleOption({
-    required BuildContext context,
-    required AppState state,
-    required UserRole role,
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required Color color,
-  }) {
-    final isSelected = state.currentRole == role;
-
-    return InkWell(
-      onTap: () {
-        state.setRole(role);
-        Navigator.pop(context);
-      },
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-        decoration: BoxDecoration(
-          color: isSelected ? color.withOpacity(0.08) : Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isSelected ? color : AppColors.cardBorder,
-            width: isSelected ? 1.8 : 1,
-          ),
+          ],
         ),
-        child: Row(
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.12),
-                shape: BoxShape.circle,
+                color: AppColors.background,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.cardBorder),
               ),
-              child: Icon(icon, color: color, size: 22),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: isSelected ? color : AppColors.textPrimary,
-                    ),
+                  CircleAvatar(
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.15),
+                    child: const Icon(Icons.person, color: AppColors.primaryDark),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: AppColors.textSecondary,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          profile.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                        ),
+                        Text(
+                          '${profile.role.displayName} • ${profile.email}',
+                          style: const TextStyle(fontSize: 11.5, color: AppColors.textSecondary),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
-            if (isSelected)
-              Icon(Icons.check_circle, color: color, size: 20)
-            else
-              const Icon(Icons.chevron_right, color: AppColors.textMuted, size: 20),
+            const SizedBox(height: 14),
+            const Text(
+              'Untuk berganti ke akun lain (Warga, Operator, atau Pengawas), Anda harus logout terlebih dahulu lalu memasukkan email dan password akun yang diinginkan.',
+              style: TextStyle(fontSize: 12.5, color: AppColors.textSecondary, height: 1.4),
+            ),
           ],
         ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.danger,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              state.logout();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Anda telah logout. Silakan login dengan akun yang diinginkan.'),
+                  backgroundColor: AppColors.textPrimary,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+            },
+            icon: const Icon(Icons.logout, size: 16),
+            label: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
       ),
     );
   }
@@ -294,7 +238,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
-                      color: roleColor.withOpacity(0.12),
+                      color: roleColor.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
@@ -323,19 +267,19 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         if (showRoleSwitcher)
           TextButton.icon(
-            onPressed: () => _showRoleSwitcherDialog(context),
+            onPressed: () => _showLogoutDialog(context, state),
             style: TextButton.styleFrom(
-              backgroundColor: AppColors.background,
+              backgroundColor: AppColors.danger.withValues(alpha: 0.08),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
-                side: const BorderSide(color: AppColors.cardBorder),
+                side: BorderSide(color: AppColors.danger.withValues(alpha: 0.25)),
               ),
             ),
-            icon: const Icon(Icons.swap_horiz, size: 16, color: AppColors.primaryDark),
+            icon: const Icon(Icons.logout_rounded, size: 15, color: AppColors.danger),
             label: const Text(
-              'Ganti Peran',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primaryDark),
+              'Keluar',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.danger),
             ),
           ),
         const SizedBox(width: 6),

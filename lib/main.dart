@@ -18,15 +18,8 @@ void main() {
   );
 }
 
-class GasKeunApp extends StatefulWidget {
+class GasKeunApp extends StatelessWidget {
   const GasKeunApp({super.key});
-
-  @override
-  State<GasKeunApp> createState() => _GasKeunAppState();
-}
-
-class _GasKeunAppState extends State<GasKeunApp> {
-  bool _isLoggedIn = true; // default true for immediate interactive evaluation
 
   @override
   Widget build(BuildContext context) {
@@ -34,24 +27,21 @@ class _GasKeunAppState extends State<GasKeunApp> {
       title: 'GasKeun — Manajemen Biodigester',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: _isLoggedIn
-          ? Consumer<AppState>(
-              builder: (context, state, _) {
-                switch (state.currentRole) {
-                  case UserRole.warga:
-                    return const WargaMainScreen();
-                  case UserRole.operator:
-                    return const OperatorMainScreen();
-                  case UserRole.pengawas:
-                    return const PengawasMainScreen();
-                }
-              },
-            )
-          : AuthScreen(
-              onLoginSuccess: () {
-                setState(() => _isLoggedIn = true);
-              },
-            ),
+      home: Consumer<AppState>(
+        builder: (context, state, _) {
+          if (!state.isLoggedIn) {
+            return const AuthScreen();
+          }
+          switch (state.currentRole) {
+            case UserRole.warga:
+              return const WargaMainScreen();
+            case UserRole.operator:
+              return const OperatorMainScreen();
+            case UserRole.pengawas:
+              return const PengawasMainScreen();
+          }
+        },
+      ),
     );
   }
 }

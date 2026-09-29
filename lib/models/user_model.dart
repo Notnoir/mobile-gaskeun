@@ -31,6 +31,7 @@ extension UserRoleExtension on UserRole {
 class UserProfile {
   final String id;
   final String name;
+  final String email;
   final String phone;
   final UserRole role;
   final String rw;
@@ -44,6 +45,7 @@ class UserProfile {
   UserProfile({
     required this.id,
     required this.name,
+    required this.email,
     required this.phone,
     required this.role,
     required this.rw,
