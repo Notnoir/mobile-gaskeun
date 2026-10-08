@@ -1,4 +1,4 @@
-package com.example.gaskeun
+package com.gaskeun.gaskeun
 
 import io.flutter.embedding.android.FlutterActivity
 

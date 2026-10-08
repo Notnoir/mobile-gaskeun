@@ -9,7 +9,7 @@ void main() {
     GoogleFonts.config.allowRuntimeFetching = false;
   });
 
-  testWidgets('GasKeunApp renders AuthScreen with email and password by default',
+  testWidgets('GasKeunApp renders AuthScreen with Google auth and tabs by default',
       (WidgetTester tester) async {
     final state = AppState();
     await tester.pumpWidget(
@@ -22,7 +22,9 @@ void main() {
 
     // Verify AuthScreen elements
     expect(find.text('GasKeun'), findsOneWidget);
-    expect(find.text('Masuk ke Akun'), findsOneWidget);
+    expect(find.text('Masuk (Login)'), findsOneWidget);
+    expect(find.text('Daftar Warga'), findsOneWidget);
+    expect(find.text('Masuk dengan Akun Google'), findsOneWidget);
     expect(find.text('Email'), findsOneWidget);
     expect(find.text('Kata Sandi (Password)'), findsOneWidget);
     expect(find.text('Masuk ke Aplikasi'), findsOneWidget);
@@ -30,11 +32,14 @@ void main() {
     state.dispose();
   });
 
-  testWidgets('GasKeunApp renders Warga portal with points balance when logged in',
+  testWidgets('GasKeunApp renders Warga portal when logged in with Google account',
       (WidgetTester tester) async {
     final state = AppState();
-    // Log in as Warga
-    state.login('warga@gaskeun.id', 'password123');
+    // Log in with Google Account
+    state.loginWithGoogleAccount(
+      email: 'warga.google@gmail.com',
+      displayName: 'Warga Google',
+    );
 
     await tester.pumpWidget(
       ChangeNotifierProvider.value(
@@ -45,7 +50,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 200));
 
-    // Verify brand name & points balance indicator
+    // Verify Warga portal elements
     expect(find.text('GasKeun'), findsWidgets);
     expect(find.text('Saldo Poin Tersedia'), findsOneWidget);
     expect(find.text('pts'), findsOneWidget);
@@ -72,8 +77,27 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify user is back at AuthScreen
-    expect(find.text('Masuk ke Akun'), findsOneWidget);
-    expect(find.text('Masuk ke Aplikasi'), findsOneWidget);
+    expect(find.text('Masuk (Login)'), findsOneWidget);
+    expect(find.text('Daftar Warga'), findsOneWidget);
+    expect(find.text('Masuk dengan Akun Google'), findsOneWidget);
+
+    state.dispose();
+  });
+
+  test('AppState registerCitizen creates new profile with welcome bonus', () {
+    final state = AppState();
+    final success = state.registerCitizen(
+      name: 'Warga Baru',
+      email: 'baru@gaskeun.id',
+      phone: '08123456789',
+      rt: 'RT 03',
+      password: 'password123',
+    );
+
+    expect(success, true);
+    expect(state.isLoggedIn, true);
+    expect(state.activeProfile.name, 'Warga Baru');
+    expect(state.activeProfile.points, 100);
 
     state.dispose();
   });

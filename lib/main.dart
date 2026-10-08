@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'core/theme/app_theme.dart';
 import 'models/user_model.dart';
 import 'providers/app_state.dart';
@@ -8,8 +9,14 @@ import 'screens/warga/warga_main_screen.dart';
 import 'screens/operator/operator_main_screen.dart';
 import 'screens/pengawas/pengawas_main_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    debugPrint('Firebase initialization notice: $e');
+  }
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppState(),

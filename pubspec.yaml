@@ -55,6 +55,9 @@ dependencies:
 
   # Route & URL Launcher (Deep link to Google Maps)
   url_launcher: ^6.3.1
+  firebase_core: ^3.12.1
+  firebase_auth: ^5.5.1
+  google_sign_in: ^6.2.2
 
 dev_dependencies:
   flutter_test:

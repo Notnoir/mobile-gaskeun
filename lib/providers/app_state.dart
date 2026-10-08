@@ -533,6 +533,92 @@ class AppState extends ChangeNotifier {
     }
   }
 
+  // Login dengan Akun Google
+  void loginWithGoogleAccount({
+    required String email,
+    required String displayName,
+    String? phone,
+    String? rt,
+    String? rw,
+  }) {
+    final cleanEmail = email.trim().toLowerCase();
+
+    if (cleanEmail == 'operator@gaskeun.id' || cleanEmail.contains('operator')) {
+      _operatorProfile = UserProfile(
+        id: _operatorProfile.id,
+        name: displayName.isNotEmpty ? displayName : _operatorProfile.name,
+        email: email,
+        phone: _operatorProfile.phone,
+        role: UserRole.operator,
+        rw: _operatorProfile.rw,
+        rt: _operatorProfile.rt,
+      );
+      _currentRole = UserRole.operator;
+    } else if (cleanEmail == 'pengawas@gaskeun.id' || cleanEmail.contains('pengawas')) {
+      _pengawasProfile = UserProfile(
+        id: _pengawasProfile.id,
+        name: displayName.isNotEmpty ? displayName : _pengawasProfile.name,
+        email: email,
+        phone: _pengawasProfile.phone,
+        role: UserRole.pengawas,
+        rw: _pengawasProfile.rw,
+        rt: _pengawasProfile.rt,
+      );
+      _currentRole = UserRole.pengawas;
+    } else {
+      // Akun Warga
+      _wargaProfile = UserProfile(
+        id: 'usr-google-${DateTime.now().millisecondsSinceEpoch}',
+        name: displayName.isNotEmpty ? displayName : 'Warga Google',
+        email: email,
+        phone: phone ?? _wargaProfile.phone,
+        role: UserRole.warga,
+        rw: rw ?? 'RW 05',
+        rt: rt ?? 'RT 02',
+        points: _wargaProfile.points,
+        monthlyTargetKg: _wargaProfile.monthlyTargetKg,
+        currentMonthKg: _wargaProfile.currentMonthKg,
+        monthlySubmissionsCount: _wargaProfile.monthlySubmissionsCount,
+        monthlyClaimsCount: _wargaProfile.monthlyClaimsCount,
+      );
+      _currentRole = UserRole.warga;
+    }
+
+    _isLoggedIn = true;
+    _isAuthenticated = true;
+    notifyListeners();
+  }
+
+  // Registrasi Warga Baru
+  bool registerCitizen({
+    required String name,
+    required String email,
+    required String phone,
+    required String rt,
+    required String password,
+  }) {
+    final cleanEmail = email.trim().toLowerCase();
+    _wargaProfile = UserProfile(
+      id: 'usr-warga-${DateTime.now().millisecondsSinceEpoch}',
+      name: name.trim(),
+      email: cleanEmail,
+      phone: phone.trim(),
+      role: UserRole.warga,
+      rw: 'RW 05',
+      rt: rt.trim(),
+      points: 100, // Reward 100 poin selamat datang untuk warga baru
+      monthlyTargetKg: 25.0,
+      currentMonthKg: 0.0,
+      monthlySubmissionsCount: 0,
+      monthlyClaimsCount: 0,
+    );
+    _currentRole = UserRole.warga;
+    _isLoggedIn = true;
+    _isAuthenticated = true;
+    notifyListeners();
+    return true;
+  }
+
   void logout() {
     _isLoggedIn = false;
     _isAuthenticated = false;

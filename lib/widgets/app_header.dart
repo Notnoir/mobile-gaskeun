@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../core/theme/app_colors.dart';
 import '../models/user_model.dart';
 import '../providers/app_state.dart';
+import '../services/auth_service.dart';
 
 class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   final String? customTitle;
@@ -90,16 +91,19 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             ),
-            onPressed: () {
+            onPressed: () async {
               Navigator.pop(ctx);
+              await AuthService().signOut();
               state.logout();
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Anda telah logout. Silakan login dengan akun yang diinginkan.'),
-                  backgroundColor: AppColors.textPrimary,
-                  duration: Duration(seconds: 2),
-                ),
-              );
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Anda telah logout. Silakan login dengan akun yang diinginkan.'),
+                    backgroundColor: AppColors.textPrimary,
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              }
             },
             icon: const Icon(Icons.logout, size: 16),
             label: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold)),
