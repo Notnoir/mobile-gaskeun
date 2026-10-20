@@ -31,7 +31,7 @@ class GasKeunApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'GasKeun — Manajemen Biodigester',
+      title: 'GasKeun Warga — Komunitas Biodigester',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       home: Consumer<AppState>(
@@ -39,14 +39,7 @@ class GasKeunApp extends StatelessWidget {
           if (!state.isLoggedIn) {
             return const AuthScreen();
           }
-          switch (state.currentRole) {
-            case UserRole.warga:
-              return const WargaMainScreen();
-            case UserRole.operator:
-              return const OperatorMainScreen();
-            case UserRole.pengawas:
-              return const PengawasMainScreen();
-          }
+          return const WargaMainScreen();
         },
       ),
     );

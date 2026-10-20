@@ -231,7 +231,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
               Row(
                 children: [
                   const Text(
-                    'GasKeun',
+                    'GasKeun Warga',
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.bold,

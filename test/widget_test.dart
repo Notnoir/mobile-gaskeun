@@ -21,7 +21,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify AuthScreen elements
-    expect(find.text('GasKeun'), findsOneWidget);
+    expect(find.text('GasKeun Warga'), findsOneWidget);
     expect(find.text('Masuk (Login)'), findsOneWidget);
     expect(find.text('Daftar Warga'), findsOneWidget);
     expect(find.text('Masuk dengan Akun Google'), findsOneWidget);
@@ -51,7 +51,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 200));
 
     // Verify Warga portal elements
-    expect(find.text('GasKeun'), findsWidgets);
+    expect(find.text('GasKeun Warga'), findsWidgets);
     expect(find.text('Saldo Poin Tersedia'), findsOneWidget);
     expect(find.text('pts'), findsOneWidget);
     expect(find.text('Keluar'), findsOneWidget);
@@ -77,6 +77,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify user is back at AuthScreen
+    expect(find.text('GasKeun Warga'), findsOneWidget);
     expect(find.text('Masuk (Login)'), findsOneWidget);
     expect(find.text('Daftar Warga'), findsOneWidget);
     expect(find.text('Masuk dengan Akun Google'), findsOneWidget);

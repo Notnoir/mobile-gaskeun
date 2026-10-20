@@ -215,7 +215,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'GasKeun',
+                        'GasKeun Warga',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -223,7 +223,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                       Text(
-                        'Biodigester Komunal RW 05',
+                        'Portal Warga Biodigester RW 05',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,

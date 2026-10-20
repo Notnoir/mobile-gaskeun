@@ -41,20 +41,6 @@ class AppState extends ChangeNotifier {
       name: 'Budi Pratama (RT 02)',
       role: UserRole.warga,
     ),
-    DemoUserCredential(
-      email: 'operator@gaskeun.id',
-      password: 'password123',
-      roleLabel: 'Operator',
-      name: 'Pak Anton (Teknisi)',
-      role: UserRole.operator,
-    ),
-    DemoUserCredential(
-      email: 'pengawas@gaskeun.id',
-      password: 'password123',
-      roleLabel: 'Pengawas RW',
-      name: 'Bu Sari Handayani (Ketua RW)',
-      role: UserRole.pengawas,
-    ),
   ];
 
   // Profiles
