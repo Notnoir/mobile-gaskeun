@@ -196,19 +196,30 @@ class _AuthScreenState extends State<AuthScreen> {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    width: 52,
+                    height: 52,
+                    padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.cardBorder, width: 1.2),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.3),
-                          blurRadius: 12,
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                    child: const Icon(Icons.eco, color: Colors.white, size: 28),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) =>
+                            const Icon(Icons.eco, color: AppColors.primary, size: 26),
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Column(
