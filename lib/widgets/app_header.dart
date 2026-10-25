@@ -42,15 +42,15 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppColors.background,
+                color: AppColors.surfaceContainerLow,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.cardBorder),
+                border: Border.all(color: AppColors.outlineVariant.withValues(alpha: 0.5)),
               ),
               child: Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.15),
-                    child: const Icon(Icons.person, color: AppColors.primaryDark),
+                    backgroundColor: AppColors.primaryContainer.withValues(alpha: 0.15),
+                    child: const Icon(Icons.person, color: AppColors.primary),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -63,7 +63,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                         ),
                         Text(
                           '${profile.role.displayName} • ${profile.email}',
-                          style: const TextStyle(fontSize: 11.5, color: AppColors.textSecondary),
+                          style: const TextStyle(fontSize: 11.5, color: AppColors.onSurfaceVariant),
                         ),
                       ],
                     ),
@@ -73,15 +73,15 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
             ),
             const SizedBox(height: 14),
             const Text(
-              'Untuk berganti ke akun lain (Warga, Operator, atau Pengawas), Anda harus logout terlebih dahulu lalu memasukkan email dan password akun yang diinginkan.',
-              style: TextStyle(fontSize: 12.5, color: AppColors.textSecondary, height: 1.4),
+              'Apakah Anda yakin ingin keluar dari akun ini?',
+              style: TextStyle(fontSize: 12.5, color: AppColors.onSurfaceVariant, height: 1.4),
             ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal', style: TextStyle(color: AppColors.textSecondary)),
+            child: const Text('Batal', style: TextStyle(color: AppColors.onSurfaceVariant)),
           ),
           ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
@@ -98,8 +98,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Anda telah logout. Silakan login dengan akun yang diinginkan.'),
-                    backgroundColor: AppColors.textPrimary,
+                    content: Text('Anda telah logout.'),
+                    backgroundColor: AppColors.onSurface,
                     duration: Duration(seconds: 2),
                   ),
                 );
@@ -119,10 +119,10 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Row(
-          children: [
-            const Icon(Icons.notifications_active_outlined, color: AppColors.primary),
-            const SizedBox(width: 8),
-            const Text('Notifikasi Terkini', style: TextStyle(fontSize: 16)),
+          children: const [
+            Icon(Icons.notifications_active_outlined, color: AppColors.primary),
+            SizedBox(width: 8),
+            Text('Notifikasi Terkini', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ],
         ),
         content: SizedBox(
@@ -131,17 +131,17 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               if (state.currentRole == UserRole.operator) ...[
-                ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: AppColors.warningLight,
-                    child: Icon(Icons.warning_amber_rounded, color: AppColors.warning),
+                const ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: AppColors.secondaryFixed,
+                    child: Icon(Icons.warning_amber_rounded, color: AppColors.secondary),
                   ),
-                  title: const Text('Prediksi Tekanan Gas', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                  subtitle: const Text('Gas hampir penuh dalam 8 jam ke depan.', style: TextStyle(fontSize: 11)),
+                  title: Text('Prediksi Tekanan Gas', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                  subtitle: Text('Gas hampir penuh dalam 8 jam ke depan.', style: TextStyle(fontSize: 11)),
                 ),
                 ListTile(
                   leading: const CircleAvatar(
-                    backgroundColor: AppColors.primaryLight,
+                    backgroundColor: AppColors.surfaceContainerLow,
                     child: Icon(Icons.delete_outline, color: AppColors.primary),
                   ),
                   title: Text('${state.pendingSubmissionsCount} Setoran Menunggu Verifikasi', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
@@ -150,28 +150,28 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
               ] else if (state.currentRole == UserRole.warga) ...[
                 const ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: AppColors.primaryLight,
+                    backgroundColor: AppColors.surfaceContainerLow,
                     child: Icon(Icons.stars, color: AppColors.primary),
                   ),
                   title: Text('Poin Masuk! +350 pts', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                  subtitle: Text('Setoran sampah 3.5 kg Anda telah diverifikasi Pak Anton.', style: TextStyle(fontSize: 11)),
+                  subtitle: Text('Setoran sampah 3.5 kg Anda telah diverifikasi Operator.', style: TextStyle(fontSize: 11)),
                 ),
                 const ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: AppColors.infoLight,
-                    child: Icon(Icons.local_shipping_outlined, color: AppColors.info),
+                    backgroundColor: AppColors.surfaceContainerHigh,
+                    child: Icon(Icons.local_shipping_outlined, color: AppColors.primary),
                   ),
                   title: Text('Voucher Digestate Siap Diambil', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                  subtitle: Text('Tunjukkan kode VCR-7790 ke petugas biodigester.', style: TextStyle(fontSize: 11)),
+                  subtitle: Text('Tunjukkan kode VCR-7429 ke petugas TPS RW 05.', style: TextStyle(fontSize: 11)),
                 ),
               ] else ...[
                 const ListTile(
                   leading: CircleAvatar(
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: AppColors.primaryContainer,
                     child: Icon(Icons.picture_as_pdf, color: Colors.white),
                   ),
                   title: Text('Laporan Bulanan Tersedia', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                  subtitle: Text('Rekapitulasi partisipasi warga bulan ini siap diekspor ke format PDF.', style: TextStyle(fontSize: 11)),
+                  subtitle: Text('Rekapitulasi partisipasi warga siap diekspor ke PDF.', style: TextStyle(fontSize: 11)),
                 ),
               ],
             ],
@@ -180,7 +180,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tutup', style: TextStyle(color: AppColors.primary)),
+            child: const Text('Tutup', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -192,36 +192,32 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
     final state = context.watch<AppState>();
     final profile = state.activeProfile;
 
-    Color roleColor;
-    switch (state.currentRole) {
-      case UserRole.warga:
-        roleColor = AppColors.primary;
-        break;
-      case UserRole.operator:
-        roleColor = AppColors.info;
-        break;
-      case UserRole.pengawas:
-        roleColor = Colors.deepPurple;
-        break;
-    }
-
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.surfaceContainerLowest.withValues(alpha: 0.95),
       titleSpacing: 16,
       title: Row(
         children: [
-          // GasKeun Logo Badge
-          Container(
-            padding: const EdgeInsets.all(7),
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: const Icon(
-              Icons.eco,
-              color: Colors.white,
-              size: 20,
+          // GasKeun Logo Asset
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              'assets/images/logo.png',
+              height: 32,
+              width: 32,
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) => Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(
+                  Icons.eco_rounded,
+                  color: AppColors.primary,
+                  size: 20,
+                ),
+              ),
             ),
           ),
           const SizedBox(width: 10),
@@ -233,34 +229,35 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                   const Text(
                     'GasKeun Warga',
                     style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.onSurface,
+                      letterSpacing: -0.2,
                     ),
                   ),
                   const SizedBox(width: 6),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
                     decoration: BoxDecoration(
-                      color: roleColor.withValues(alpha: 0.12),
-                      borderRadius: BorderRadius.circular(6),
+                      color: AppColors.surfaceContainerLow,
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      state.currentRole.displayName,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        color: roleColor,
+                      '${profile.rt} / ${profile.rw}',
+                      style: const TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
                 ],
               ),
               Text(
-                profile.name,
+                customTitle ?? 'Portal Warga',
                 style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.textSecondary,
+                  fontSize: 11.5,
+                  color: AppColors.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -269,57 +266,63 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
-        if (showRoleSwitcher)
-          TextButton.icon(
-            onPressed: () => _showLogoutDialog(context, state),
-            style: TextButton.styleFrom(
-              backgroundColor: AppColors.danger.withValues(alpha: 0.08),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-                side: BorderSide(color: AppColors.danger.withValues(alpha: 0.25)),
-              ),
-            ),
-            icon: const Icon(Icons.logout_rounded, size: 15, color: AppColors.danger),
-            label: const Text(
-              'Keluar',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.danger),
-            ),
-          ),
-        const SizedBox(width: 6),
-        // Notification bell with badge
+        // Notification bell with unread dot (Stitch style)
         Stack(
           alignment: Alignment.center,
           children: [
             IconButton(
-              icon: const Icon(Icons.notifications_none_rounded, color: AppColors.textPrimary),
+              icon: const Icon(Icons.notifications_none_rounded, color: AppColors.onSurfaceVariant, size: 24),
               onPressed: () => _showNotificationsDialog(context, state),
             ),
-            if (state.unreadNotificationsCount > 0)
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: AppColors.danger,
-                    shape: BoxShape.circle,
-                  ),
-                  constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
-                  child: Text(
-                    '${state.unreadNotificationsCount}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 9,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+            Positioned(
+              top: 14,
+              right: 14,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: AppColors.primaryContainer,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 1.5),
                 ),
               ),
+            ),
           ],
         ),
-        const SizedBox(width: 8),
+        // User profile avatar chip with logout handler
+        InkWell(
+          onTap: () => _showLogoutDialog(context, state),
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            margin: const EdgeInsets.only(right: 12),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 13,
+                  backgroundColor: AppColors.primaryFixed,
+                  child: Text(
+                    profile.name.isNotEmpty ? profile.name[0] : 'W',
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.onPrimaryFixed),
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  profile.name.split(' ').first,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.onSurface,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

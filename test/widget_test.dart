@@ -54,7 +54,7 @@ void main() {
     expect(find.text('GasKeun Warga'), findsWidgets);
     expect(find.text('Saldo Poin Tersedia'), findsOneWidget);
     expect(find.text('pts'), findsOneWidget);
-    expect(find.text('Keluar'), findsOneWidget);
+    expect(find.text('Setor'), findsOneWidget);
 
     state.dispose();
   });

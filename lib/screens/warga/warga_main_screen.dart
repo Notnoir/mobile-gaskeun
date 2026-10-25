@@ -16,6 +16,13 @@ class WargaMainScreen extends StatefulWidget {
 class _WargaMainScreenState extends State<WargaMainScreen> {
   int _currentIndex = 0;
 
+  final List<String> _tabTitles = [
+    'Beranda',
+    'Setor Sampah',
+    'Tukar Poin',
+    'Edukasi',
+  ];
+
   @override
   Widget build(BuildContext context) {
     final tabs = [
@@ -29,48 +36,88 @@ class _WargaMainScreenState extends State<WargaMainScreen> {
     ];
 
     return Scaffold(
-      appBar: const AppHeader(),
+      backgroundColor: AppColors.background,
+      appBar: AppHeader(
+        customTitle: _tabTitles[_currentIndex],
+      ),
       body: IndexedStack(
         index: _currentIndex,
         children: tabs,
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLowest.withValues(alpha: 0.98),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
-              blurRadius: 10,
+              color: Colors.black.withValues(alpha: 0.05),
+              blurRadius: 12,
               offset: const Offset(0, -2),
             ),
           ],
         ),
-        child: BottomNavigationBar(
-          currentIndex: _currentIndex,
-          onTap: (index) => setState(() => _currentIndex = index),
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: AppColors.textMuted,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
-          unselectedLabelStyle: const TextStyle(fontSize: 11),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Beranda',
+        child: SafeArea(
+          child: SizedBox(
+            height: 64,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _buildNavItem(
+                  index: 0,
+                  icon: Icons.home_rounded,
+                  label: 'Beranda',
+                ),
+                _buildNavItem(
+                  index: 1,
+                  icon: Icons.recycling_rounded,
+                  label: 'Setor',
+                ),
+                _buildNavItem(
+                  index: 2,
+                  icon: Icons.redeem_rounded,
+                  label: 'Tukar Poin',
+                ),
+                _buildNavItem(
+                  index: 3,
+                  icon: Icons.menu_book_rounded,
+                  label: 'Edukasi',
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline),
-              activeIcon: Icon(Icons.add_circle),
-              label: 'Setor',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required int index,
+    required IconData icon,
+    required String label,
+  }) {
+    final isSelected = _currentIndex == index;
+    final color = isSelected ? AppColors.primary : AppColors.textMuted;
+
+    return InkWell(
+      onTap: () => setState(() => _currentIndex = index),
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 24,
+              color: color,
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.card_giftcard_outlined),
-              activeIcon: Icon(Icons.card_giftcard),
-              label: 'Tukar Poin',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu_book_outlined),
-              activeIcon: Icon(Icons.menu_book),
-              label: 'Edukasi',
+            const SizedBox(height: 3),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                color: color,
+              ),
             ),
           ],
         ),

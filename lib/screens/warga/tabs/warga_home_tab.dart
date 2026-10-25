@@ -26,23 +26,80 @@ class WargaHomeTab extends StatelessWidget {
         .take(5)
         .toList();
 
+    final remainingKg = (profile.monthlyTargetKg - profile.currentMonthKg).clamp(0.0, 999.0);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Saldo Poin Banner (Emerald Gradient per PRD)
+          // Greeting & Profile Intro (Stitch Layout)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Text(
+                            'Halo, ${profile.name}',
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.onSurface,
+                              letterSpacing: -0.3,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        const Text('👋', style: TextStyle(fontSize: 18)),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Warga ${profile.rt} / ${profile.rw} • Kelurahan Sukamaju',
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        color: AppColors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                width: 40,
+                height: 40,
+                decoration: const BoxDecoration(
+                  color: AppColors.surfaceContainerHigh,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.eco_rounded,
+                  color: AppColors.primary,
+                  size: 22,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Saldo Poin Hero Card (Stitch Surface Style)
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(20),
+              color: AppColors.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.35),
-                  blurRadius: 16,
-                  offset: const Offset(0, 6),
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
@@ -53,44 +110,52 @@ class WargaHomeTab extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(6),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(Icons.stars_rounded, color: Colors.white, size: 18),
-                        ),
-                        const SizedBox(width: 8),
-                        const Text(
+                      children: const [
+                        Icon(Icons.stars_rounded, color: AppColors.primary, size: 18),
+                        SizedBox(width: 6),
+                        Text(
                           'Saldo Poin Tersedia',
                           style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.onSurfaceVariant,
+                            letterSpacing: 0.2,
                           ),
                         ),
                       ],
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
+                        color: AppColors.surfaceContainer,
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text(
-                        '${profile.rt} / ${profile.rw}',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 6,
+                            height: 6,
+                            decoration: const BoxDecoration(
+                              color: AppColors.primaryContainer,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          const Text(
+                            'Aktif',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
@@ -98,9 +163,9 @@ class WargaHomeTab extends StatelessWidget {
                     Text(
                       Formatters.number(profile.points),
                       style: const TextStyle(
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        fontSize: 34,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.onSurface,
                         letterSpacing: -0.5,
                       ),
                     ),
@@ -108,115 +173,72 @@ class WargaHomeTab extends StatelessWidget {
                     const Text(
                       'pts',
                       style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white70,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                // Action Quick Buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: onNavigateToSetor,
-                        icon: const Icon(Icons.add_circle_outline, size: 18, color: AppColors.primaryDark),
-                        label: const Text('Setor Sampah', style: TextStyle(color: AppColors.primaryDark, fontWeight: FontWeight.bold)),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          elevation: 0,
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: onNavigateToTukar,
-                        icon: const Icon(Icons.card_giftcard, size: 18, color: Colors.white),
-                        label: const Text('Tukar Reward', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white, width: 1.5),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Monthly Target & Contribution Progress
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: AppColors.cardBorder),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Kontribusi Sampah Bulan Ini',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                    Text(
-                      '${(progress * 100).toInt()}% Target',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
                         color: AppColors.primary,
                       ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Text(
-                      Formatters.weight(profile.currentMonthKg),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryDark,
-                      ),
-                    ),
-                    const Text(
-                      ' terkumpul dari target ',
-                      style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
-                    ),
-                    Text(
-                      Formatters.weight(profile.monthlyTargetKg),
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
                 const SizedBox(height: 12),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    minHeight: 10,
-                    backgroundColor: AppColors.primaryLight.withOpacity(0.5),
-                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                // Sub-card Setara kg & CTA Tukar
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.scale_rounded, color: AppColors.primary, size: 18),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Setara ${(profile.points / 100).toStringAsFixed(1)} kg sampah',
+                            style: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                      InkWell(
+                        onTap: onNavigateToTukar,
+                        borderRadius: BorderRadius.circular(8),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryContainer,
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.primaryContainer.withValues(alpha: 0.3),
+                                blurRadius: 6,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Text(
+                                'Tukar Reward',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              SizedBox(width: 4),
+                              Icon(Icons.arrow_forward_rounded, size: 14, color: Colors.white),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -224,40 +246,175 @@ class WargaHomeTab extends StatelessWidget {
           ),
           const SizedBox(height: 16),
 
-          // Quick Stats (Setoran bulan ini, Klaim Reward)
+          // Target Kontribusi Bulanan (Monthly Tracker)
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: const [
+                        Icon(Icons.trending_up_rounded, color: AppColors.primary, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Target Kontribusi Bulanan',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.onSurface,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        'Okt 2026',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${profile.currentMonthKg} ',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.onSurface,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '/ ${profile.monthlyTargetKg} kg',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: AppColors.onSurfaceVariant,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '${(progress * 100).toInt()}% Tercapai',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    minHeight: 10,
+                    backgroundColor: AppColors.surfaceContainer,
+                    valueColor: const AlwaysStoppedAnimation<Color>(AppColors.primaryContainer),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                // Motivational Callout
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.electric_bolt_rounded, color: AppColors.secondary, size: 18),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          remainingKg > 0
+                              ? 'Kurang ${remainingKg.toStringAsFixed(1)} kg lagi untuk klaim bonus 300 poin RT!'
+                              : 'Hebat! Anda telah melampaui target bulanan RT 02.',
+                          style: const TextStyle(
+                            fontSize: 11.5,
+                            color: AppColors.onSurfaceVariant,
+                            height: 1.3,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+
+          // Quick Metric Badges (2 columns grid)
           Row(
             children: [
               Expanded(
                 child: Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppColors.cardBorder),
+                    color: AppColors.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        width: 32,
+                        height: 32,
                         decoration: BoxDecoration(
-                          color: AppColors.infoLight,
-                          borderRadius: BorderRadius.circular(10),
+                          color: AppColors.surfaceContainer,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(Icons.recycling, color: AppColors.info, size: 20),
+                        child: const Icon(Icons.compost_rounded, color: AppColors.primary, size: 18),
                       ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${profile.monthlySubmissionsCount} Kali',
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const Text(
-                            'Setor Bulan Ini',
-                            style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
-                          ),
-                        ],
+                      const SizedBox(height: 8),
+                      Text(
+                        '${profile.monthlySubmissionsCount} Kali',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.onSurface,
+                        ),
+                      ),
+                      const Text(
+                        'Setoran Bulan Ini',
+                        style: TextStyle(fontSize: 11.5, color: AppColors.onSurfaceVariant),
                       ),
                     ],
                   ),
@@ -268,33 +425,40 @@ class WargaHomeTab extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: AppColors.cardBorder),
+                    color: AppColors.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.04),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        width: 32,
+                        height: 32,
                         decoration: BoxDecoration(
-                          color: AppColors.warningLight,
-                          borderRadius: BorderRadius.circular(10),
+                          color: AppColors.surfaceContainer,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Icon(Icons.redeem, color: AppColors.warning, size: 20),
+                        child: const Icon(Icons.confirmation_number_rounded, color: AppColors.secondary, size: 18),
                       ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${profile.monthlyClaimsCount} Produk',
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          const Text(
-                            'Reward Diterima',
-                            style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
-                          ),
-                        ],
+                      const SizedBox(height: 8),
+                      Text(
+                        '${profile.monthlyClaimsCount} Voucher',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.onSurface,
+                        ),
+                      ),
+                      const Text(
+                        'Reward Diklaim',
+                        style: TextStyle(fontSize: 11.5, color: AppColors.onSurfaceVariant),
                       ),
                     ],
                   ),
@@ -302,47 +466,173 @@ class WargaHomeTab extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: 14),
 
-          // Activity Feed
+          // Daily Sorting Tip Banner
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: const BoxDecoration(
+                    color: AppColors.secondaryFixed,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.lightbulb_rounded, color: AppColors.secondary, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'TIPS CEPAT HARI INI',
+                        style: TextStyle(
+                          fontSize: 10.5,
+                          fontWeight: FontWeight.w800,
+                          color: AppColors.secondary,
+                          letterSpacing: 0.6,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Tiriskan sisa sayur & kuah sebelum disetor agar maggot biokonversi lebih cepat bekerja!',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.onSurface,
+                          height: 1.3,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Umpan Aktivitas Terkini (Recent Activity Feed)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Aktivitas Terbaru',
+                'Aktivitas Terkini',
                 style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.onSurface,
                 ),
               ),
-              Text(
-                '${mySubmissions.length} Riwayat',
-                style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
+              InkWell(
+                onTap: onNavigateToSetor,
+                child: const Text(
+                  'Lihat Semua',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primary,
+                  ),
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
 
           if (mySubmissions.isEmpty)
             Container(
               padding: const EdgeInsets.all(24),
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
+                color: AppColors.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppColors.cardBorder),
               ),
               child: const Center(
                 child: Text(
                   'Belum ada riwayat setoran. Mulai setor sampah organik Anda sekarang!',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                  style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
                 ),
               ),
             )
           else
-            ...mySubmissions.map((item) => _buildActivityItem(item)),
+            Container(
+              decoration: BoxDecoration(
+                color: AppColors.surfaceContainerLowest,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.04),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: mySubmissions.map((item) => _buildActivityItem(item)).toList(),
+              ),
+            ),
+          const SizedBox(height: 16),
+
+          // Quick Community Hub Banner
+          Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppColors.surfaceContainerLowest,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.compost_rounded, color: AppColors.primary, size: 24),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Taman Maggot Sukamaju',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.onSurface,
+                        ),
+                      ),
+                      Text(
+                        'Jadwal panen kasgot minggu ini di RW 05',
+                        style: TextStyle(
+                          fontSize: 11.5,
+                          color: AppColors.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded, color: AppColors.onSurfaceVariant),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
         ],
       ),
     );
@@ -350,40 +640,21 @@ class WargaHomeTab extends StatelessWidget {
 
   Widget _buildActivityItem(WasteSubmission item) {
     final isAccepted = item.status == SubmissionStatus.diterima;
-    final isPending = item.status == SubmissionStatus.menunggu;
 
-    Color statusColor;
-    Color statusBg;
-    if (isAccepted) {
-      statusColor = AppColors.primary;
-      statusBg = AppColors.primaryLight;
-    } else if (isPending) {
-      statusColor = AppColors.warning;
-      statusBg = AppColors.warningLight;
-    } else {
-      statusColor = AppColors.danger;
-      statusBg = AppColors.dangerLight;
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.cardBorder),
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       child: Row(
         children: [
           Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: statusBg,
+            width: 38,
+            height: 38,
+            decoration: const BoxDecoration(
+              color: AppColors.surfaceContainer,
               shape: BoxShape.circle,
             ),
             child: Icon(
-              isAccepted ? Icons.check_circle_outline : (isPending ? Icons.schedule : Icons.cancel_outlined),
-              color: statusColor,
+              Icons.delete_sweep_rounded,
+              color: isAccepted ? AppColors.primary : AppColors.onSurfaceVariant,
               size: 20,
             ),
           ),
@@ -392,50 +663,35 @@ class WargaHomeTab extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Tiket ${item.ticketCode}',
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '+${item.points} pts',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: isAccepted ? AppColors.primaryDark : AppColors.textSecondary,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'Setoran ${item.wasteCategory} (${item.weightKg} kg)',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.onSurface,
+                  ),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${Formatters.weight(item.weightKg)} • ${item.wasteCategory}',
-                  style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      Formatters.dateTime(item.createdAt),
-                      style: const TextStyle(fontSize: 11, color: AppColors.textMuted),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: statusBg,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        item.status.label,
-                        style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: statusColor),
-                      ),
-                    ),
-                  ],
+                  '${Formatters.dateTime(item.createdAt)} • Tiket #${item.ticketCode}',
+                  style: const TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant),
                 ),
               ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: isAccepted ? AppColors.surfaceContainer : AppColors.surfaceContainerHigh,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Text(
+              isAccepted ? '+${item.points} Poin' : item.status.label,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w700,
+                color: isAccepted ? AppColors.primary : AppColors.onSurfaceVariant,
+              ),
             ),
           ),
         ],
