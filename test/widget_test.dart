@@ -9,7 +9,7 @@ void main() {
     GoogleFonts.config.allowRuntimeFetching = false;
   });
 
-  testWidgets('GasKeunApp renders AuthScreen with Google auth and tabs by default',
+  testWidgets('GasKeunApp renders AuthScreen with Google auth and actions by default',
       (WidgetTester tester) async {
     final state = AppState();
     await tester.pumpWidget(
@@ -21,13 +21,30 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify AuthScreen elements
+    expect(find.text('Selamat Datang'), findsOneWidget);
+    expect(find.text('Masuk ke akun GasKeun Anda'), findsOneWidget);
+    expect(find.text('Lanjut dengan Google'), findsOneWidget);
+    expect(find.text('Masuk dengan Email'), findsOneWidget);
+    expect(find.text('Daftar Sekarang'), findsOneWidget);
     expect(find.text('GasKeun Warga'), findsOneWidget);
-    expect(find.text('Masuk (Login)'), findsOneWidget);
-    expect(find.text('Daftar Warga'), findsOneWidget);
-    expect(find.text('Masuk dengan Akun Google'), findsOneWidget);
-    expect(find.text('Email'), findsOneWidget);
-    expect(find.text('Kata Sandi (Password)'), findsOneWidget);
-    expect(find.text('Masuk ke Aplikasi'), findsOneWidget);
+
+    // Switch to Register Mode
+    await tester.tap(find.text('Daftar Sekarang'));
+    await tester.pumpAndSettle();
+    expect(find.text('Daftar Akun Warga'), findsOneWidget);
+    expect(find.text('Daftar dengan Google'), findsOneWidget);
+    expect(find.text('Lanjut Daftar Akun'), findsOneWidget);
+
+    // Switch back to Login Mode
+    await tester.ensureVisible(find.text('Masuk Sekarang'));
+    await tester.tap(find.text('Masuk Sekarang'));
+    await tester.pumpAndSettle();
+    expect(find.text('Selamat Datang'), findsOneWidget);
+
+    // Expand Email Login Form
+    await tester.tap(find.text('Masuk dengan Email'));
+    await tester.pumpAndSettle();
+    expect(find.text('Masuk Sekarang'), findsOneWidget);
 
     state.dispose();
   });
@@ -77,10 +94,9 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify user is back at AuthScreen
-    expect(find.text('GasKeun Warga'), findsOneWidget);
-    expect(find.text('Masuk (Login)'), findsOneWidget);
-    expect(find.text('Daftar Warga'), findsOneWidget);
-    expect(find.text('Masuk dengan Akun Google'), findsOneWidget);
+    expect(find.text('Selamat Datang'), findsOneWidget);
+    expect(find.text('Lanjut dengan Google'), findsOneWidget);
+    expect(find.text('Masuk dengan Email'), findsOneWidget);
 
     state.dispose();
   });
