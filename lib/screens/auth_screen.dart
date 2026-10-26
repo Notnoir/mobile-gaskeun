@@ -192,8 +192,8 @@ class _AuthScreenState extends State<AuthScreen> {
       backgroundColor: Colors.white,
       body: LayoutBuilder(
         builder: (context, constraints) {
-          final topHeight = (constraints.maxHeight * 0.44).clamp(240.0, 380.0);
-          const overlap = 32.0;
+          final topHeight = constraints.maxHeight * 0.52;
+          const overlap = 28.0;
 
           return Stack(
             children: [
@@ -272,7 +272,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               ),
                             ],
                           ),
-                          padding: EdgeInsets.fromLTRB(24, 12, 24, 20 + bottomInset),
+                          padding: EdgeInsets.fromLTRB(24, 10, 24, 16 + bottomInset),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -282,9 +282,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                   // iOS Grabber Indicator
                                   Center(
                                     child: Container(
-                                      width: 40,
+                                      width: 38,
                                       height: 4,
-                                      margin: const EdgeInsets.only(bottom: 20),
+                                      margin: const EdgeInsets.only(bottom: 12),
                                       decoration: BoxDecoration(
                                         color: const Color(0xFFE2E8F0),
                                         borderRadius: BorderRadius.circular(4),
@@ -297,7 +297,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                     _selectedTab == 0 ? 'Selamat Datang' : 'Daftar Akun Warga',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                      fontSize: _selectedTab == 0 ? 24 : 22,
+                                      fontSize: _selectedTab == 0 ? 22 : 20,
                                       fontWeight: FontWeight.w900,
                                       color: _selectedTab == 0
                                           ? const Color(0xFF0F172A)
@@ -305,19 +305,19 @@ class _AuthScreenState extends State<AuthScreen> {
                                       letterSpacing: -0.4,
                                     ),
                                   ),
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 3),
                                   Text(
                                     _selectedTab == 0
                                         ? 'Masuk ke akun GasKeun Anda'
                                         : 'Mulai pilah sampah & kumpulkan berkah',
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
-                                      fontSize: 13,
+                                      fontSize: 12.5,
                                       color: Color(0xFF64748B),
                                       fontWeight: FontWeight.w400,
                                     ),
                                   ),
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 14),
 
                                   // Error Banner
                                   if (_errorMessage != null)
@@ -430,7 +430,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
                               // Subfooter pinned at bottom of card
                               Padding(
-                                padding: const EdgeInsets.only(top: 24),
+                                padding: const EdgeInsets.only(top: 14),
                                 child: Column(
                                   children: const [
                                     Text(
