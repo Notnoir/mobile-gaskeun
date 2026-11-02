@@ -731,11 +731,11 @@ class _AuthScreenState extends State<AuthScreen> {
                           isExpanded: true,
                           icon: const Icon(Icons.keyboard_arrow_down_rounded, color: Color(0xFF64748B)),
                           items: const [
-                            DropdownMenuItem(value: 'RT 01', child: Text('Wilayah RT 01 / RW 05', style: TextStyle(fontSize: 13))),
-                            DropdownMenuItem(value: 'RT 02', child: Text('Wilayah RT 02 / RW 05', style: TextStyle(fontSize: 13))),
-                            DropdownMenuItem(value: 'RT 03', child: Text('Wilayah RT 03 / RW 05', style: TextStyle(fontSize: 13))),
-                            DropdownMenuItem(value: 'RT 04', child: Text('Wilayah RT 04 / RW 05', style: TextStyle(fontSize: 13))),
-                            DropdownMenuItem(value: 'RT 05', child: Text('Wilayah RT 05 / RW 05', style: TextStyle(fontSize: 13))),
+                            DropdownMenuItem(value: 'RT 01', child: Text('Wilayah RT 01 / RW 01 Cigending', style: TextStyle(fontSize: 13))),
+                            DropdownMenuItem(value: 'RT 02', child: Text('Wilayah RT 02 / RW 01 Cigending', style: TextStyle(fontSize: 13))),
+                            DropdownMenuItem(value: 'RT 03', child: Text('Wilayah RT 03 / RW 01 Cigending', style: TextStyle(fontSize: 13))),
+                            DropdownMenuItem(value: 'RT 04', child: Text('Wilayah RT 04 / RW 01 Cigending', style: TextStyle(fontSize: 13))),
+                            DropdownMenuItem(value: 'RT 05', child: Text('Wilayah RT 05 / RW 01 Cigending', style: TextStyle(fontSize: 13))),
                           ],
                           onChanged: (val) {
                             if (val != null) setState(() => _regRt = val);

@@ -122,7 +122,7 @@ class _WargaTukarTabState extends State<WargaTukarTab> {
             ),
             const SizedBox(height: 6),
             Text(
-              'Voucher untuk ${item.name} siap diambil di TPS RW 05.',
+              'Voucher untuk ${item.name} siap diambil di TPS RW 01 Cigending.',
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 12.5, color: AppColors.onSurfaceVariant),
             ),
@@ -353,7 +353,7 @@ class _WargaTukarTabState extends State<WargaTukarTab> {
                             ),
                             const SizedBox(width: 5),
                             const Text(
-                              'Siap Diambil di TPS RW 05',
+                              'Siap Diambil di TPS RW 01 Cigending',
                               style: TextStyle(
                                 fontSize: 10.5,
                                 fontWeight: FontWeight.w700,

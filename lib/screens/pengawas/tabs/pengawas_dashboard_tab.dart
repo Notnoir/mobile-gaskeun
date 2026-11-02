@@ -31,7 +31,7 @@ class _PengawasDashboardTabState extends State<PengawasDashboardTab> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Ringkasan Kinerja RW 05',
+                'Ringkasan Kinerja RW 01 Cigending',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               Container(

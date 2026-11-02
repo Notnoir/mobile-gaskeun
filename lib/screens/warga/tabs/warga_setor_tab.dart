@@ -73,14 +73,14 @@ class _WargaSetorTabState extends State<WargaSetorTab> {
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Membuka rute ke TPS RW 05...')),
+            const SnackBar(content: Text('Membuka rute ke TPS RW 01 Cigending...')),
           );
         }
       }
     } catch (_) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Menavigasi ke TPS RW 05')),
+          const SnackBar(content: Text('Menavigasi ke TPS RW 01 Cigending')),
         );
       }
     }
@@ -498,7 +498,7 @@ class _WargaSetorTabState extends State<WargaSetorTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        'TPS Biodigester RW 05',
+                        'TPS Biodigester RW 01 Cigending',
                         style: TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
                       ),
                       Text(

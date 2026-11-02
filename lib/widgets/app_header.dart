@@ -162,7 +162,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
                     child: Icon(Icons.local_shipping_outlined, color: AppColors.primary),
                   ),
                   title: Text('Voucher Digestate Siap Diambil', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
-                  subtitle: Text('Tunjukkan kode VCR-7429 ke petugas TPS RW 05.', style: TextStyle(fontSize: 11)),
+                  subtitle: Text('Tunjukkan kode VCR-7429 ke petugas TPS RW 01 Cigending.', style: TextStyle(fontSize: 11)),
                 ),
               ] else ...[
                 const ListTile(
@@ -224,34 +224,14 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  const Text(
-                    'GasKeun Warga',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.onSurface,
-                      letterSpacing: -0.2,
-                    ),
-                  ),
-                  const SizedBox(width: 6),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLow,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      '${profile.rt} / ${profile.rw}',
-                      style: const TextStyle(
-                        fontSize: 10.5,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ),
-                ],
+              const Text(
+                'GasKeun Warga',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.onSurface,
+                  letterSpacing: -0.2,
+                ),
               ),
               Text(
                 customTitle ?? 'Portal Warga',

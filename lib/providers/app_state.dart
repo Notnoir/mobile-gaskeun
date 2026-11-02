@@ -69,8 +69,8 @@ class AppState extends ChangeNotifier {
   final List<GeneratedReport> _reports = [];
 
   // Machine & Sensors
-  String machineName = 'Biodigester Komunal BD-RW05';
-  String machineLocation = 'Jl. Kenanga RT 02 / RW 05 (Samping Balai Pertemuan)';
+  String machineName = 'Biodigester Komunal BD-RW01';
+  String machineLocation = 'Jl. Kenanga RT 02 / RW 01 Cigending (Samping Balai Pertemuan)';
   bool isMachineOnline = true;
 
   SensorMetric _temperatureMetric = SensorMetric(
@@ -173,7 +173,7 @@ class AppState extends ChangeNotifier {
       email: 'warga@gaskeun.id',
       phone: '0812-3456-7890',
       role: UserRole.warga,
-      rw: 'RW 05',
+      rw: 'RW 01 Cigending',
       rt: 'RT 02',
       points: 1250,
       monthlyTargetKg: 25.0,
@@ -188,7 +188,7 @@ class AppState extends ChangeNotifier {
       email: 'operator@gaskeun.id',
       phone: '0813-9876-5432',
       role: UserRole.operator,
-      rw: 'RW 05',
+      rw: 'RW 01 Cigending',
       rt: 'RT 03',
     );
 
@@ -198,7 +198,7 @@ class AppState extends ChangeNotifier {
       email: 'pengawas@gaskeun.id',
       phone: '0811-2233-4455',
       role: UserRole.pengawas,
-      rw: 'RW 05',
+      rw: 'RW 01 Cigending',
       rt: 'RT 01',
     );
 
@@ -342,17 +342,17 @@ class AppState extends ChangeNotifier {
     _reports.addAll([
       GeneratedReport(
         id: 'rep-08-2026',
-        title: 'Laporan Ekosistem Biodigester RW 05',
+        title: 'Laporan Ekosistem Biodigester RW 01 Cigending',
         period: 'Agustus 2026',
-        fileName: 'Laporan_GasKeun_RW05_Agu_2026.pdf',
+        fileName: 'Laporan_GasKeun_RW01_Agu_2026.pdf',
         fileSize: '412 KB',
         generatedAt: DateTime(2026, 8, 31, 16, 0),
       ),
       GeneratedReport(
         id: 'rep-07-2026',
-        title: 'Laporan Ekosistem Biodigester RW 05',
+        title: 'Laporan Ekosistem Biodigester RW 01 Cigending',
         period: 'Juli 2026',
-        fileName: 'Laporan_GasKeun_RW05_Jul_2026.pdf',
+        fileName: 'Laporan_GasKeun_RW01_Jul_2026.pdf',
         fileSize: '398 KB',
         generatedAt: DateTime(2026, 7, 31, 15, 30),
       ),
@@ -559,7 +559,7 @@ class AppState extends ChangeNotifier {
         email: email,
         phone: phone ?? _wargaProfile.phone,
         role: UserRole.warga,
-        rw: rw ?? 'RW 05',
+        rw: rw ?? 'RW 01 Cigending',
         rt: rt ?? 'RT 02',
         points: _wargaProfile.points,
         monthlyTargetKg: _wargaProfile.monthlyTargetKg,
@@ -590,7 +590,7 @@ class AppState extends ChangeNotifier {
       email: cleanEmail,
       phone: phone.trim(),
       role: UserRole.warga,
-      rw: 'RW 05',
+      rw: 'RW 01 Cigending',
       rt: rt.trim(),
       points: 100, // Reward 100 poin selamat datang untuk warga baru
       monthlyTargetKg: 25.0,

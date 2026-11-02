@@ -45,10 +45,10 @@ class _PengawasLaporanTabState extends State<PengawasLaporanTab> {
         year: _selectedYear,
       );
 
-      final fileName = 'Laporan_GasKeun_RW05_${_selectedMonth}_$_selectedYear.pdf';
+      final fileName = 'Laporan_GasKeun_RW01_${_selectedMonth}_$_selectedYear.pdf';
       final newReport = GeneratedReport(
         id: 'rep-${DateTime.now().millisecondsSinceEpoch}',
-        title: 'Laporan Ekosistem Biodigester RW 05',
+        title: 'Laporan Ekosistem Biodigester RW 01 Cigending',
         period: '$_selectedMonth $_selectedYear',
         fileName: fileName,
         fileSize: '425 KB',
